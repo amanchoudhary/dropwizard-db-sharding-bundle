@@ -250,10 +250,10 @@ public class RelationalDao<T> implements ShardedDao<T> {
                     .numRows(numRows)
                     .build();
             return Transactions.<List<T>, SelectParamPriv, Boolean>execute(dao.sessionFactory, true, dao::select, selectParam, entityList -> {
-                if(entityList == null || entityList.isEmpty()) {
+                if (entityList == null || entityList.isEmpty()) {
                     return false;
                 }
-                for(T oldEntity: entityList) {
+                for (T oldEntity : entityList) {
                     if (null == oldEntity) {
                         return false;
                     }
@@ -270,17 +270,8 @@ public class RelationalDao<T> implements ShardedDao<T> {
         }
     }
 
-
-    public List<T> select(String parentKey, DetachedCriteria criteria) throws Exception {
-        return select(parentKey, criteria, 0, 10);
-    }
-
     public List<T> select(String parentKey, DetachedCriteria criteria, int first, int numResults) throws Exception {
         return select(parentKey, criteria, first, numResults, t-> t);
-    }
-
-    public<U> U select(String parentKey, DetachedCriteria criteria, Function<List<T>, U> handler) throws Exception {
-        return select(parentKey, criteria, 0, 10, handler);
     }
 
     public<U> U select(String parentKey, DetachedCriteria criteria, int first, int numResults, Function<List<T>, U> handler) throws Exception {
@@ -305,10 +296,6 @@ public class RelationalDao<T> implements ShardedDao<T> {
         RelationalDaoPriv dao = daos.get(shardId);
         Optional<T> result = Transactions.<T, Object>executeAndResolve(dao.sessionFactory, true, dao::get, key);
         return result.isPresent();
-    }
-
-    public List<T> scatterGather(DetachedCriteria criteria) {
-        return scatterGather(criteria, 0, 10);
     }
 
     public List<T> scatterGather(DetachedCriteria criteria, int start, int numRows) {
